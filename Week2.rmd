@@ -1,0 +1,59 @@
+---
+output:
+  html_document: default
+  word_document: default
+---
+# I will apply visualization on a dataset that I have
+#and your HW is to reapply this to your selected datasets
+#and submit both your new R-code along with screenshots, similar to mine showing 
+#all report results from all Rstudio GUIs
+```{r}
+data<-read.csv("D:/TASKS/rstudio tasks/carl/university_rank2.csv")
+str(data)
+# the university rank data set contains 1304 observation sof 27 observations.
+sum(is.na(data))
+# the data set contains 2319 missing values.
+
+# load package and data
+options(scipen=999)  # turn-off scientific notation like 1e+48
+library(ggplot2)
+theme_set(theme_bw())  # pre-set the bw theme.
+
+gg <- ggplot(data, aes(x=R_C_PCT_CLASSES_GT_50, y=IS_RANKED)) + 
+  geom_point(aes(col=R_C_PCT_CLASSES_GT_50, size=IS_RANKED)) + 
+  geom_smooth(method="loess", se=F) + 
+  xlim(c(0, 10)) + 
+  ylim(c(0, 300)) + 
+  labs(subtitle="R_C_PCT_CLASSES_GT_50 Vs IS_RANKED", 
+       y="IS_RANKED", 
+       x="R_C_PCT_CLASSES_GT_50", 
+       title="Scatterplot", 
+       caption = "Source: USNEWS")
+gg
+
+# scatter plot with encoding
+# Scatterplot
+options(scipen = 999)
+library(ggplot2)
+library(ggalt)
+data_select <- data[data$IS_RANKED >1 & data$IS_RANKED <300 & 
+                      data$R_C_AVG_PCT_RETENTION >50 &
+                      data$R_C_AVG_PCT_RETENTION <100, ]
+
+# Plot
+ggplot(data, aes(x=data$IS_RANKED, y=data$R_C_AVG_PCT_RETENTION)) + 
+  geom_point(aes(col=data$V_DISPLAY_SCORE, size=data$PRED_GRAD_RATE)) +   # draw points
+  geom_smooth(method="loess", se=F) + 
+  xlim(c(0, 10)) + 
+  ylim(c(0, 300)) +    # draw smoothing line
+  geom_encircle(aes(x=data_select$IS_RANKED, y=data_select$R_C_AVG_PCT_RETENTION), 
+                data=data_select,
+                color="red", 
+                size=2, 
+                expand=0.08) +   # encircle
+  labs(subtitle="R_C_PCT_CLASSES_GT_50 Vs IS_RANKED", 
+       y="IS_RANKED", 
+       x="R_C_PCT_CLASSES_GT_50", 
+       title="Scatterplot + Encircle", 
+       caption = "Source: USNEWS")
+```
